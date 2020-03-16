@@ -15,8 +15,37 @@ export function bubbleSort(arr) {
                 arr[k+1] = temp
             }
         }
+
+        animations.push({'confirmed': arr.length - 1 - i})
     }
 
-    //console.log(animations)
     return animations;
 }
+
+export function selectionSort(arr) {
+    let max;
+    let maxidx;
+    let animations = [];
+
+    for (let i = 0; i < arr.length; i++) {
+        max = arr[0];
+        maxidx = 0;
+
+        for (let k = 0; k < arr.length - i; k++) {
+            animations.push({'compare': [k, maxidx]});
+
+            if (arr[k] > max) {
+                max = arr[k];
+                maxidx = k;
+            }
+        }
+
+        animations.push({'swap': [arr.length - 1 - i, maxidx]})
+        animations.push({'confirmed': arr.length - 1 - i})
+        arr[maxidx] = arr[arr.length - 1 - i];
+        arr[arr.length - 1 - i] = max;
+
+    }
+
+    return animations;
+};

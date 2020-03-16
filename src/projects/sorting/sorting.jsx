@@ -3,7 +3,7 @@
 
 import React from 'react';
 import './sorting.css'
-import {bubbleSort} from './algorithms'
+import {bubbleSort, selectionSort} from './algorithms'
 
 export class Sorting extends React.Component {
     constructor(props) {
@@ -14,37 +14,45 @@ export class Sorting extends React.Component {
         };
         this.resetArray = this.resetArray.bind(this);
         this.animate = this.animate.bind(this);
-
     }
 
     componentDidMount() {
         this.resetArray();
-        
         return
     }
 
     resetArray() {
-        const num = 100;
+        const num = document.getElementById('num-bars').value;
+
         const width = document.getElementById('sorting-container').offsetWidth;
         const height = document.getElementById('sorting-container').offsetHeight;
-        let bar_height = Math.floor((height - num)/num) || 1
+        const bars = document.getElementsByClassName('sorting-bar');
+        let bar_height = Math.floor((height - num)/num) || 1;
         
-        const arr = []
+        const arr = [];
 
         for (let i = 0; i < num; i++) {
-            arr.push(Math.random()*width)
+            arr.push(Math.random()*width);
         };
+
+        for (let i = 0; i < bars.length; i++) {
+            bars[i].style.backgroundColor = 'white';
+        }
 
         this.setState({array: arr, height: bar_height});
         
         return;
     }
 
-    animate() {
+    animate(func) {
+        document.getElementById('sorting-container').scrollIntoView();
+
         const bars = document.getElementsByClassName('sorting-bar');
-        const animations = bubbleSort(this.state.array);
+        const animations = func(this.state.array);
         const comparison_colour = 'red';
-        const speed = 1
+        const swap_colour = 'blue';
+        const confirmed_colour = 'Chartreuse';
+        const speed = document.getElementById('speed').value
         let changed = []
         let barone;
         let bartwo;
@@ -72,10 +80,22 @@ export class Sorting extends React.Component {
                         break;
 
                     case 'swap':
-                        barone = bars[animations[i].swap[0]].style.width;
-                        bars[animations[i].swap[0]].style.width = bars[animations[i].swap[1]].style.width
-                        bars[animations[i].swap[1]].style.width = barone
+                        barone = bars[animations[i].swap[0]];
+                        bartwo = bars[animations[i].swap[1]];
+
+                        let temp = barone.style.width;
+                        barone.style.width = bartwo.style.width
+                        bartwo.style.width = temp
+                        
+                        barone.style.backgroundColor = swap_colour;
+                        bartwo.style.backgroundColor = swap_colour;
+                        
+                        changed.push(barone, bartwo)
+
                         break;
+
+                    case 'confirmed':
+                        bars[animations[i].confirmed].style.backgroundColor = confirmed_colour;
 
                     default:
                         break;
@@ -83,12 +103,6 @@ export class Sorting extends React.Component {
                 
             }, i * speed)
         }
-
-        setTimeout(() => {
-            bars[0].style.backgroundColor = 'white';
-            bars[1].style.backgroundColor = 'white';
-        }, animations.length*speed)
-
     }
 
     render() {
@@ -106,11 +120,14 @@ export class Sorting extends React.Component {
                                 height: height}}></div>
                     ))}
                 </div>
-
-                <button onClick={this.resetArray}>New array</button>
-                <button onClick={this.animate}>Bubble sort</button>
-
+                <footer>
+                    <button onClick={this.resetArray}>New array</button>
+                    <button onClick={() => this.animate(bubbleSort)}>Bubble sort</button>
+                    <button onClick={() => this.animate(selectionSort)}>Selection sort</button>
+                    <input id='num-bars' type='number' min='0' defaultValue='100' />
+                    <input id='speed' type='number' min='0' defaultValue='1' />
+                </footer>
             </div>
-        );        
+        );
     }
 }
