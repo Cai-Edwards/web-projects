@@ -1,0 +1,16 @@
+html, body {
+    overflow: auto;
+}
+
+div {
+    height: 100%;
+}
+
+#sorting-container {
+    height: 100%;
+}
+
+.sorting-bar {
+    background-color: white;
+    margin-bottom: 1px;
+}
