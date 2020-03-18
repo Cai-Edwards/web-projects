@@ -49,3 +49,65 @@ export function selectionSort(arr) {
 
     return animations;
 };
+
+export function quickSort(arr) {
+    function quickSortHelper(arr, L=0) {
+        if (arr.length < 1) {
+            return arr;
+        }
+        
+        if (arr.length === 1) {
+            animations.push({'confirmed': (L)});
+            return arr;
+        }
+
+        let pivot = Math.floor(Math.random() * arr.length);
+        animations.push({'pivot': (L+pivot)})
+
+        let i = 0;
+        while (i < arr.length) {
+            if (i < pivot) {
+                animations.push({'compare': [L+i, L+pivot]})
+                if (arr[i] <= arr[pivot]) {
+                    i++;
+                } else {
+                    arr = swap(arr, i, pivot-1);
+                    arr = swap(arr, pivot-1, pivot);
+                    animations.push({'swap': [L+i, L+pivot-1]})
+                    animations.push({'swap': [L+pivot-1, L+pivot]})
+                    pivot--;
+                }
+            } else {
+                animations.push({'compare': [L+i, L+pivot]})
+                if (arr[i] >= arr[pivot]) {
+                    i++;
+                } else {
+                    arr = swap(arr, i, pivot+1);
+                    arr = swap(arr, pivot+1, pivot);
+                    animations.push({'swap': [L+i, L+pivot+1]})
+                    animations.push({'swap': [L+pivot+1, L+pivot]})
+                    pivot++;
+                }
+            }
+        }
+
+        return quickSortHelper(arr.slice(0, pivot), L).concat(arr[pivot],
+            quickSortHelper(arr.slice(pivot+1, arr.length), L+pivot+1))
+        
+    }
+
+    let animations = [];
+
+    console.log(quickSortHelper(arr))
+
+    return animations
+}
+
+function swap(arr, i, j) {
+    let temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+
+    return arr;
+};
+

@@ -3,14 +3,15 @@
 
 import React from 'react';
 import './sorting.css'
-import {bubbleSort, selectionSort} from './algorithms'
+import {bubbleSort, selectionSort, quickSort} from './algorithms'
 
 export class Sorting extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             array: [],
-            height: 1
+            height: 1,
+            margin: 1
         };
         this.resetArray = this.resetArray.bind(this);
         this.animate = this.animate.bind(this);
@@ -27,8 +28,7 @@ export class Sorting extends React.Component {
         const width = document.getElementById('sorting-container').offsetWidth;
         const height = document.getElementById('sorting-container').offsetHeight;
         const bars = document.getElementsByClassName('sorting-bar');
-        let bar_height = Math.floor((height - num)/num) || 1;
-        
+        let bar_height = Math.floor((height)/num) || 1;
         const arr = [];
 
         for (let i = 0; i < num; i++) {
@@ -52,8 +52,10 @@ export class Sorting extends React.Component {
         const comparison_colour = 'red';
         const swap_colour = 'blue';
         const confirmed_colour = 'Chartreuse';
+        const pivot_colour = 'violet'
+        let before = []
         const speed = document.getElementById('speed').value
-        let changed = []
+        let changed = [];
         let barone;
         let bartwo;
 
@@ -62,15 +64,18 @@ export class Sorting extends React.Component {
             setTimeout(() => {
 
                 for (let k = 0; k < changed.length; k++) {
-                    changed[k].style.backgroundColor = 'white';
+                    changed[k].style.backgroundColor = before[k];
                 }
 
                 changed = []
+                before = []
 
                 switch (Object.keys(animations[i])[0]) {
                     case 'compare':
                         barone = bars[animations[i].compare[0]];
                         bartwo = bars[animations[i].compare[1]]
+
+                        before.push(barone.style.backgroundColor, bartwo.style.backgroundColor);
 
                         barone.style.backgroundColor = comparison_colour;
                         bartwo.style.backgroundColor = comparison_colour;
@@ -86,6 +91,8 @@ export class Sorting extends React.Component {
                         let temp = barone.style.width;
                         barone.style.width = bartwo.style.width
                         bartwo.style.width = temp
+
+                        before.push(barone.style.backgroundColor, bartwo.style.backgroundColor);
                         
                         barone.style.backgroundColor = swap_colour;
                         bartwo.style.backgroundColor = swap_colour;
@@ -96,6 +103,11 @@ export class Sorting extends React.Component {
 
                     case 'confirmed':
                         bars[animations[i].confirmed].style.backgroundColor = confirmed_colour;
+                        break;
+
+                    case 'pivot':
+                        bars[animations[i].pivot].style.backgroundColor = pivot_colour;
+                        break;
 
                     default:
                         break;
@@ -108,6 +120,8 @@ export class Sorting extends React.Component {
     render() {
         const arr = this.state.array;
         const height = this.state.height;
+
+
         return (
             <div>
                 <div id='sorting-container'>
@@ -124,6 +138,7 @@ export class Sorting extends React.Component {
                     <button onClick={this.resetArray}>New array</button>
                     <button onClick={() => this.animate(bubbleSort)}>Bubble sort</button>
                     <button onClick={() => this.animate(selectionSort)}>Selection sort</button>
+                    <button onClick={() => this.animate(quickSort)}>Quick sort</button>
                     <input id='num-bars' type='number' min='0' defaultValue='100' />
                     <input id='speed' type='number' min='0' defaultValue='1' />
                 </footer>
