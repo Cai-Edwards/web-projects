@@ -3,7 +3,7 @@
 
 import React from 'react';
 import './sorting.css'
-import {bubbleSort, selectionSort, quickSort} from './algorithms'
+import {bubbleSort, selectionSort, quickSort, mergeSort} from './algorithms'
 
 export class Sorting extends React.Component {
     constructor(props) {
@@ -109,6 +109,12 @@ export class Sorting extends React.Component {
                         bars[animations[i].pivot].style.backgroundColor = pivot_colour;
                         break;
 
+                    case 'overwrite':
+                        for (let k = animations[i].overwrite[0]; k < animations[i.overwrite[1]]; k++) {
+                            bars[k].style.width = animations[i].overwrite[1][k];
+                        }
+                        break;
+
                     default:
                         break;
                 }
@@ -139,6 +145,7 @@ export class Sorting extends React.Component {
                     <button onClick={() => this.animate(bubbleSort)}>Bubble sort</button>
                     <button onClick={() => this.animate(selectionSort)}>Selection sort</button>
                     <button onClick={() => this.animate(quickSort)}>Quick sort</button>
+                    <button onClick={() => this.animate(mergeSort)}>Merge sort</button>
                     <input id='num-bars' type='number' min='0' defaultValue='100' />
                     <input id='speed' type='number' min='0' defaultValue='1' />
                 </footer>

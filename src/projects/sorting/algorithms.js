@@ -111,3 +111,49 @@ function swap(arr, i, j) {
     return arr;
 };
 
+export function mergeSort(arr) {
+    let animations = [];
+
+    function splitdown(arr, L) {
+        if (arr.length != 1) {
+            const mid = Math.floor(arr.length/2);
+            const arr1 = splitdown(arr.slice(0, mid), L);
+            const arr2 = splitdown(arr.slice(mid, arr.length), L+mid);
+        } else {
+            return arr
+        }
+
+        
+        return merge(arr1, arr2, L, L+mid);
+    }
+
+    function merge(arr1, arr2, L1, L2) {
+        let i, j = 0;
+
+        let temp = [];
+
+        while (arr1.length !== i && arr2.length !== j) {
+            
+            animations.push({'compare': [L1 + i, L2 + j]});
+            if (arr1[0] < arr2[0]) {
+                temp.push(arr1[0])
+                arr1.shift()
+                i++;
+            } else {
+                temp.push(arr2[0])
+                arr2.shift()
+                j++;
+            };
+        };
+
+        temp.concat(arr1);
+        temp.concat(arr2);
+
+        animations.push({'overwrite': [L1, temp]});
+
+        return temp;
+    }
+
+    splitdown(arr, 0)
+    return animations
+}
